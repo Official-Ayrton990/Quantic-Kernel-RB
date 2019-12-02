@@ -1482,4 +1482,3 @@ config HWCONF_MANAGER
         It provides all kinds of components configuration information and
         monitor values.
 
-source "techpack/Kconfig"
