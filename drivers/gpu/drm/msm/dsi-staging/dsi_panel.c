@@ -5352,6 +5352,7 @@ int dsi_panel_disable(struct dsi_panel *panel)
 	panel->in_aod = false;
 	panel->fod_backlight_flag = false;
 	panel->power_mode = SDE_MODE_DPMS_OFF;
+	panel->doze_state = false;
 	panel->fod_hbm_status = false;
 
 	mutex_unlock(&panel->panel_lock);
