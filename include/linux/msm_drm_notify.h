@@ -20,6 +20,13 @@
 /* A hardware display blank early change occurred */
 #define MSM_DRM_EARLY_EVENT_BLANK		0x02
 
+#define 	DRM_FOD_EVENT           0x04
+
+enum {
+	FOD_FINGERDOWN = 0,
+	FOD_FINGERUP,
+}
+
 enum {
 	/* panel: power on */
 	MSM_DRM_BLANK_UNBLANK,

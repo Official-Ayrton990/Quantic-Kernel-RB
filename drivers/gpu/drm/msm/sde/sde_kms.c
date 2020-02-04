@@ -1051,6 +1051,10 @@ static void sde_kms_commit(struct msm_kms *kms,
 		}
 	}
 
+	for_each_crtc_in_state(old_state, crtc, old_crtc_state, i) {
+		sde_crtc_fod_ui_ready(crtc, old_crtc_state);
+	}
+
 	SDE_ATRACE_END("sde_kms_commit");
 }
 
@@ -1135,7 +1139,9 @@ static void sde_kms_complete_commit(struct msm_kms *kms,
 	SDE_ATRACE_BEGIN("sde_kms_complete_commit");
 
 	for_each_crtc_in_state(old_state, crtc, old_crtc_state, i) {
+		SDE_ATRACE_BEGIN("sde_crtc_complete_commit");
 		sde_crtc_complete_commit(crtc, old_crtc_state);
+		SDE_ATRACE_END("sde_crtc_complete_commit");
 
 		/* complete secure transitions if any */
 		if (sde_kms->smmu_state.transition_type == POST_COMMIT)
