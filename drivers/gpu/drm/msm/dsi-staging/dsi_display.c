@@ -5485,12 +5485,7 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 	display->name = name;
 	display->pdev = pdev;
 	display->boot_disp = boot_disp;
-<<<<<<< HEAD
-	display->is_prim_display = true;
-	display->is_first_boot = true;
-=======
 	display->dsi_type = dsi_type;
->>>>>>> LA.UM.8.1.r1-09400-sm8150.0
 
 	dsi_display_parse_cmdline_topology(display, index);
 
