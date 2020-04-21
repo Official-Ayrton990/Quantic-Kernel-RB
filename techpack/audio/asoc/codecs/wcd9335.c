@@ -4159,7 +4159,7 @@ static int tasha_codec_enable_spk_anc(struct snd_soc_dapm_widget *w,
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMU:
 		ret = tasha_codec_enable_anc(w, kcontrol, event);
-		queue_delayed_work(system_power_efficient_wq, &tasha->spk_anc_dwork.dwork,
+		schedule_delayed_work(&tasha->spk_anc_dwork.dwork,
 				      msecs_to_jiffies(spk_anc_en_delay));
 		break;
 	case SND_SOC_DAPM_POST_PMD:
@@ -5762,11 +5762,11 @@ static int tasha_codec_enable_dec(struct snd_soc_dapm_widget *w,
 			snd_soc_write(codec, WCD9335_MBHC_ZDET_RAMP_CTL, 0x03);
 		}
 		/* schedule work queue to Remove Mute */
-		queue_delayed_work(system_power_efficient_wq, &tasha->tx_mute_dwork[decimator].dwork,
+		schedule_delayed_work(&tasha->tx_mute_dwork[decimator].dwork,
 				      msecs_to_jiffies(tx_unmute_delay));
 		if (tasha->tx_hpf_work[decimator].hpf_cut_off_freq !=
 							CF_MIN_3DB_150HZ)
-			queue_delayed_work(system_power_efficient_wq, 
+			schedule_delayed_work(
 					&tasha->tx_hpf_work[decimator].dwork,
 					msecs_to_jiffies(300));
 		/* apply gain after decimator is enabled */
@@ -7820,6 +7820,12 @@ static int tasha_mad_input_put(struct snd_kcontrol *kcontrol,
 		"%s: tasha input widget = %s\n", __func__,
 		mad_input_widget);
 
+	if (!strcmp("AMIC2", mad_input_widget)) {
+		mic_bias_found = 2;
+		dev_info(codec->dev,
+			"%s: tavil input widget = %s, enable MIC BIAS2 directly.\n",
+			__func__, mad_input_widget);
+	} else {
 	for (i = 0; i < card->num_of_dapm_routes; i++) {
 		if (!strcmp(card->of_dapm_routes[i].sink, mad_input_widget)) {
 			source_widget = card->of_dapm_routes[i].source;
@@ -7848,6 +7854,7 @@ static int tasha_mad_input_put(struct snd_kcontrol *kcontrol,
 				break;
 			}
 		}
+	}
 	}
 
 	if (!mic_bias_found) {
@@ -12033,7 +12040,7 @@ static int tasha_dig_core_power_collapse(struct tasha_priv *tasha,
 
 	if (req_state == POWER_COLLAPSE) {
 		if (tasha->power_active_ref == 0) {
-			queue_delayed_work(system_power_efficient_wq, &tasha->power_gate_work,
+			schedule_delayed_work(&tasha->power_gate_work,
 			msecs_to_jiffies(dig_core_collapse_timer * 1000));
 		}
 	} else if (req_state == POWER_RESUME) {
