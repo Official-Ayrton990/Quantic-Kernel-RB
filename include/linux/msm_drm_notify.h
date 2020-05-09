@@ -25,7 +25,7 @@
 enum {
 	FOD_FINGERDOWN = 0,
 	FOD_FINGERUP,
-}
+};
 
 enum {
 	/* panel: power on */
